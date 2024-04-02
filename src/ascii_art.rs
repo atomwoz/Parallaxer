@@ -15,6 +15,13 @@ pub fn get_multiline_width(lines: &Vec<&str>) -> usize {
     }
     min_width
 }
+pub fn load_train() -> Vec<&'static str> {
+    include_str!("assets/train.txt").lines().collect()
+}
+
+pub fn load_tunnel() -> Vec<&'static str> {
+    include_str!("assets/tunnel.txt").lines().collect()
+}
 
 #[cfg(test)]
 mod tests {
@@ -22,30 +29,16 @@ mod tests {
 
     #[test]
     fn test_slice_multiline() {
-        let lines = vec![
-            "Hello,",
-            "World!",
-            "This is",
-            "a test",
-        ];
+        let lines = vec!["Hello,", "World!", "This is", "a test"];
         let start = 2;
         let end = 6;
-        let expected = vec![
-            "llo,",
-            "rld!",
-            "is",
-            " test",
-        ];
+        let expected = vec!["llo,", "rld!", "is", " test"];
         assert_eq!(slice_multiline(&lines, start, end), expected);
     }
 
     #[test]
     fn test_get_multiline_width() {
-        let lines = vec![
-            "Hello",
-            "World!",
-            "This is a test",
-        ];
+        let lines = vec!["Hello", "World!", "This is a test"];
         let expected = 5;
         assert_eq!(get_multiline_width(&lines), expected);
     }

@@ -1,8 +1,6 @@
-use std::{iter, thread, time::Duration};
+use std::{thread, time::Duration};
 
 mod ascii_art;
-mod data;
-
 fn cls_console() {
     if cfg!(windows) {
         let _ = std::process::Command::new("cmd")
@@ -20,17 +18,22 @@ fn set_cursor_position(x: u16, y: u16) {
 const TERMINAL_WIDTH: usize = 80;
 
 fn main() {
-    let lines: Vec<&str> = data::TUNNEL.lines().collect();
+    let lines: Vec<&str> = ascii_art::load_tunnel();
     let mut i = 0;
     cls_console();
     loop {
         let sliced = ascii_art::slice_multiline(&lines, i, i + TERMINAL_WIDTH);
         set_cursor_position(0, 0);
+
+        //Draw tunnel
         for x in sliced {
             println!("{}", x);
         }
+
+        //Draw train
+
         i += 1;
-        if (i + TERMINAL_WIDTH >= ascii_art::get_multiline_width(&lines)) {
+        if i + TERMINAL_WIDTH >= ascii_art::get_multiline_width(&lines) {
             i = 0;
         }
         thread::sleep(Duration::from_millis(20));

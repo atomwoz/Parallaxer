@@ -15,6 +15,10 @@ fn set_cursor_position(x: u16, y: u16) {
     let _ = crossterm::execute!(std::io::stdout(), crossterm::cursor::MoveTo(x, y));
 }
 
+fn hide_cursor() {
+    let _ = crossterm::execute!(std::io::stdout(), crossterm::cursor::Hide);
+}
+
 const TERMINAL_WIDTH: usize = 200;
 const CANVAS_HEIGHT: usize = 8;
 
@@ -25,10 +29,20 @@ fn main() {
     let tunnel_width = ascii_art::get_multiline_width(&lines);
     let train_width = ascii_art::get_multiline_width(&train);
     cls_console();
+    hide_cursor();
+
+    //Draw train
+    set_cursor_position(0, 1);
+    for x in train.iter() {
+        println!("{}", x);
+    }
+
+    set_cursor_position(0, 0);
     let separator = "-".repeat(TERMINAL_WIDTH);
     println!("{}", separator);
     set_cursor_position(0, (CANVAS_HEIGHT - 1) as u16);
     println!("{}", separator);
+
     loop {
         let slice_end = i + TERMINAL_WIDTH - train_width;
         let sliced = ascii_art::slice_multiline(&lines, i, slice_end);
@@ -39,17 +53,10 @@ fn main() {
             println!("{}", x);
             set_cursor_position(train_width as u16, i as u16 + 1);
         }
-
-        //Draw train
-        set_cursor_position(0, 1);
-        for x in train.iter() {
-            println!("{}", x);
-        }
-
         i += 1;
         if slice_end >= tunnel_width {
             i = 0;
         }
-        thread::sleep(Duration::from_millis(20));
+        thread::sleep(Duration::from_millis(16));
     }
 }
